@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <UApp>
     <MyPrettyComponent />
-  </div>
+  </UApp>
 </template>
 
 <script setup></script>

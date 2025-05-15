@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full h-full flex items-center justify-center">
+  <div class="w-full h-full flex flex-col items-center justify-center">
+    <UButton @click="onClick">Click me!</UButton>
+    <UButton @click="onClick">Click me!</UButton>
     <UButton @click="onClick">Click me!</UButton>
   </div>
 </template>

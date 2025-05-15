@@ -8,6 +8,11 @@
     "generate": "nuxi generate"
   },
   "dependencies": {
+    "@nuxt/ui": "^3.1.1",
     "nuxt": "^3.17.3"
-  }
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@tailwindcss/oxide"
+  ]
 }

@@ -30,5 +30,8 @@ export default defineNuxtModule<ModuleOptions>({
     await installModule("@nuxt/ui");
     await installModule("@nuxt/icon");
     _nuxt.options.css.push(resolver.resolve("./runtime/assets/css/main.css"));
+    if (!_nuxt.options.modules.includes("@nuxt/ui")) {
+      _nuxt.options.modules.push("@nuxt/ui");
+    }
   },
 });
