@@ -28,10 +28,14 @@ export default defineNuxtModule<ModuleOptions>({
     });
 
     await installModule("@nuxt/ui");
+    await installModule("@vueuse/nuxt");
     await installModule("@nuxt/icon");
     _nuxt.options.css.push(resolver.resolve("./runtime/assets/css/main.css"));
     if (!_nuxt.options.modules.includes("@nuxt/ui")) {
       _nuxt.options.modules.push("@nuxt/ui");
+    }
+    if (!_nuxt.options.modules.includes("@vueuse/nuxt")) {
+      _nuxt.options.modules.push("@vueuse/nuxt");
     }
   },
 });

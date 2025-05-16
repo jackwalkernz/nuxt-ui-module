@@ -13,7 +13,11 @@ export default createConfigForNuxt({
   dirs: {
     src: ["./playground"],
   },
-})
-  .append
+}).append(
   // your custom flat config here...
-  ();
+  {
+    rules: {
+      "no-unused-vars": "off",
+    },
+  }
+);
