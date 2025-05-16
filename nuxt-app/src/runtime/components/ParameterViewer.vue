@@ -3,7 +3,12 @@
     <div
       class="w-full h-full row-start-1 row-end-2 col-start-1 col-end-1 col-span-2 row-span-3 p-4 border-primary rounded-lg border drop-shadow"
     >
-      <svg ref="svgContainer" class="w-full h-screen" height="500">
+      <svg
+        ref="svgContainer"
+        class="w-full h-screen"
+        height="500"
+        @click.stop="handleRemoveActivePopulation"
+      >
         <line
           v-for="position in phenotypePositions"
           :key="position"
@@ -11,7 +16,9 @@
           :x2="position"
           :y1="startingYPosition"
           :y2="usableHeight"
-          stroke="lightGray"
+          stroke="green"
+          stroke-width="1"
+          stroke-dasharray="1,1,4,4"
         />
         <line
           :x1="dashedPosition"
@@ -45,8 +52,21 @@
           {{ item.label }}
         </text>
         <polyline
-          v-for="entry in entries"
+          v-if="entrySelected"
+          :points="
+            activeEntry.positions
+              .map((position) => `${position.x},${position.y}`)
+              .join(' ')
+          "
+          stroke="red"
+          stroke-width="2"
+          fill="none"
+        />
+        <polyline
+          v-for="(entry, index) in entries"
+          v-else
           :key="entry.id"
+          :ref="entryRefs.set"
           :points="
             entry.positions
               .map((position) => `${position.x},${position.y}`)
@@ -55,6 +75,7 @@
           stroke="lightGray"
           stroke-width="1"
           fill="none"
+          @click="handleClick(index)"
         />
       </svg>
     </div>
@@ -273,7 +294,7 @@ interface PopulationEntry {
   positions: PopulationPosition[];
 }
 
-const entryCount = ref(10);
+const entryCount = ref(20);
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -298,4 +319,23 @@ const entries = computed<PopulationEntry[]>(() => {
   }
   return entry_collection;
 });
+
+const entryRefs = useTemplateRefsList<SVGPolylineElement>();
+
+onUpdated(() => {
+  console.log(entryRefs);
+});
+
+function handleClick(index) {
+  const entry = entries.value[index];
+  activeEntry.value = entry;
+  entrySelected.value = true;
+}
+const entrySelected = ref(false);
+const activeEntry = ref<PopulationEntry | undefined>(undefined);
+
+function handleRemoveActivePopulation() {
+  entrySelected.value = false;
+  activeEntry.value = undefined;
+}
 </script>
