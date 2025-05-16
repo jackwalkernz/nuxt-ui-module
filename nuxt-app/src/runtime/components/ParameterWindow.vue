@@ -1,0 +1,4 @@
+<template>
+  <ParameterViewer />
+  <ParameterControl />
+</template>

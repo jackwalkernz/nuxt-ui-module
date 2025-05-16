@@ -1,7 +1,9 @@
 <template>
-  <div class="w-full h-full flex flex-col items-center justify-center p-4">
-    <div class="w-full h-full p-4 border-primary rounded-lg border drop-shadow">
-      <svg ref="svgContainer" class="w-full" height="600">
+  <div class="w-full h-screen grid grid-cols-1 grid-rows-3 p-4">
+    <div
+      class="w-full h-full row-start-1 row-end-2 col-start-1 col-end-1 col-span-2 row-span-3 p-4 border-primary rounded-lg border drop-shadow"
+    >
+      <svg ref="svgContainer" class="w-full h-screen" height="500">
         <line
           v-for="position in phenotypePositions"
           :key="position"
@@ -44,11 +46,14 @@
         </text>
       </svg>
     </div>
-    <div class="w-full h-full flex flex-col items-center justify-stretch">
+    <div class="flex flex-col items-center justify-center">
       <ParameterControl
         v-for="phenotype in phenotypeRanges"
         :key="phenotype.id"
         :phenotype-range="phenotype"
+        class="gap-4 py-2"
+        @update-lower-value="handleUpdateLowerValue"
+        @update-upper-value="handleUpdateUpperValue"
       />
     </div>
   </div>
@@ -56,13 +61,11 @@
 
 <script setup lang="ts">
 import { reactive, useTemplateRef } from "#imports";
-import { useElementBounding, useResizeObserver } from "@vueuse/core";
+import { useElementBounding } from "@vueuse/core";
 import type {
-  Genotype,
-  Phenotype,
   GenotypeRange,
   PhenotypeRange,
-  PopulationEntry,
+  PhenotypeRangeUpdate,
 } from "~/types";
 
 const svgContainer = useTemplateRef("svgContainer");
@@ -95,39 +98,39 @@ const phenotypeRanges = reactive<PhenotypeRange[]>([
     id: "a",
     name: "Phenotype 1",
     max_value: 200,
-    min_value: 20,
+    min_value: 54,
     step_count: 20,
     large_step_count: 5,
   },
   {
     id: "b",
     name: "Phenotype 2",
-    max_value: 200,
-    min_value: 20,
+    max_value: 664,
+    min_value: 354,
     step_count: 20,
     large_step_count: 5,
   },
   {
     id: "c",
     name: "Phenotype 3",
-    max_value: 200,
-    min_value: 20,
+    max_value: 23,
+    min_value: 10,
     step_count: 20,
     large_step_count: 5,
   },
   {
     id: "d",
     name: "Phenotype 4",
-    max_value: 200,
-    min_value: 20,
+    max_value: 0.56,
+    min_value: 0.005,
     step_count: 20,
     large_step_count: 5,
   },
   {
     id: "e",
     name: "Phenotype 5",
-    max_value: 200,
-    min_value: 20,
+    max_value: 2342,
+    min_value: 345,
     step_count: 20,
     large_step_count: 5,
   },
@@ -253,4 +256,24 @@ const labels = computed<LabelCollection[]>(() => {
 });
 
 const allLabels = computed(() => labels.value.all_labels);
+
+const handleUpdateLowerValue = (phenotypeRangeUpdate: PhenotypeRangeUpdate) => {
+  const phenotypeIndex = phenotypeRanges.findIndex(
+    (phenotype) => phenotype.id === phenotypeRangeUpdate.phenotype_id
+  );
+  if (phenotypeIndex !== -1) {
+    phenotypeRanges[phenotypeIndex].min_value =
+      phenotypeRangeUpdate.lower_value;
+  }
+};
+
+const handleUpdateUpperValue = (phenotypeRangeUpdate: PhenotypeRangeUpdate) => {
+  const phenotypeIndex = phenotypeRanges.findIndex(
+    (phenotype) => phenotype.id === phenotypeRangeUpdate.phenotype_id
+  );
+  if (phenotypeIndex !== -1) {
+    phenotypeRanges[phenotypeIndex].min_value =
+      phenotypeRangeUpdate.lower_value;
+  }
+};
 </script>
