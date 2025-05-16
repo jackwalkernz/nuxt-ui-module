@@ -1,6 +1,6 @@
 <template>
   <UApp>
-    <MyPrettyComponent />
+    <ParameterViewer />
   </UApp>
 </template>
 

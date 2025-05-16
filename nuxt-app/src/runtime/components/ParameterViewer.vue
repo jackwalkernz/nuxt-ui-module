@@ -12,6 +12,14 @@
           stroke="lightGray"
         />
         <line
+          :x1="dashedPosition"
+          :x2="dashedPosition"
+          :y1="startingYPosition - 20"
+          :y2="usableHeight + 20"
+          stroke="lightGray"
+          stroke-dasharray="5,5"
+        />
+        <line
           v-for="position in genotypePositions"
           :key="position"
           :x1="position"
@@ -36,12 +44,19 @@
         </text>
       </svg>
     </div>
+    <div class="w-full h-full flex flex-col items-center justify-stretch">
+      <ParameterControl
+        v-for="phenotype in phenotypeRanges"
+        :key="phenotype.id"
+        :phenotype-range="phenotype"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, useTemplateRef } from "#imports";
-import { useElementBounding } from "@vueuse/core";
+import { useElementBounding, useResizeObserver } from "@vueuse/core";
 import type {
   Genotype,
   Phenotype,
@@ -190,9 +205,19 @@ const sliderPositions = computed<PositionCollection>(() => {
 const phenotypePositions = computed(
   () => sliderPositions.value.phenotype_positions
 );
+
 const genotypePositions = computed(
   () => sliderPositions.value.genotype_positions
 );
+
+const dashedPosition = computed(() => {
+  const lastPhenotypePosition = phenotypePositions.value.at(-1);
+  const firstGenotypePosition = genotypePositions.value.at(0);
+  if (lastPhenotypePosition && firstGenotypePosition) {
+    return (lastPhenotypePosition + firstGenotypePosition) / 2;
+  }
+  return -1;
+});
 
 // label genotypes and phenotypes
 
