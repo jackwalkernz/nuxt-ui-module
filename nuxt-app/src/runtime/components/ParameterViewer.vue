@@ -3,12 +3,7 @@
     <div
       class="w-full h-full row-start-1 row-end-2 col-start-1 col-end-1 col-span-2 row-span-3 p-4 border-primary rounded-lg border drop-shadow"
     >
-      <svg
-        ref="svgContainer"
-        class="w-full h-screen"
-        height="500"
-        @click.stop="handleRemoveActivePopulation"
-      >
+      <svg ref="svgContainer" class="w-full h-screen" height="500">
         <line
           v-for="position in phenotypePositions"
           :key="position"
@@ -48,6 +43,7 @@
           font-weight="bold"
           fill="gray"
           font="Arial"
+          style="user-select: none; cursor: pointer"
         >
           {{ item.label }}
         </text>
@@ -58,8 +54,10 @@
               .map((position) => `${position.x},${position.y}`)
               .join(' ')
           "
-          stroke="red"
-          stroke-width="2"
+          stroke="lightGreen"
+          stroke-width="1"
+          stroke-dasharray="4,4"
+          stroke-linecap="round"
           fill="none"
         />
         <polyline
@@ -155,6 +153,38 @@ const phenotypeRanges = reactive<PhenotypeRange[]>([
   },
   {
     id: "e",
+    name: "Phenotype 5",
+    max_value: 2342,
+    min_value: 345,
+    step_count: 20,
+    large_step_count: 5,
+  },
+  {
+    id: "f",
+    name: "Phenotype 5",
+    max_value: 2342,
+    min_value: 345,
+    step_count: 20,
+    large_step_count: 5,
+  },
+  {
+    id: "g",
+    name: "Phenotype 5",
+    max_value: 2342,
+    min_value: 345,
+    step_count: 20,
+    large_step_count: 5,
+  },
+  {
+    id: "h",
+    name: "Phenotype 5",
+    max_value: 2342,
+    min_value: 345,
+    step_count: 20,
+    large_step_count: 5,
+  },
+  {
+    id: "i",
     name: "Phenotype 5",
     max_value: 2342,
     min_value: 345,
@@ -334,8 +364,8 @@ function handleClick(index) {
 const entrySelected = ref(false);
 const activeEntry = ref<PopulationEntry | undefined>(undefined);
 
-function handleRemoveActivePopulation() {
+onClickOutside(svgContainer, () => {
   entrySelected.value = false;
   activeEntry.value = undefined;
-}
+});
 </script>

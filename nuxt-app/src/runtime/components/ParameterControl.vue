@@ -55,7 +55,7 @@ const props = defineProps({
 
 const enabled = ref(true);
 
-const exactValue = ref(true);
+const exactValue = ref(false);
 
 const lowerValue = ref<number>(props.phenotypeRange.min_value);
 const upperValue = ref<number>(props.phenotypeRange.max_value);
