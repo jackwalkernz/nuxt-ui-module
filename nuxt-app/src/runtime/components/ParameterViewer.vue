@@ -44,6 +44,18 @@
         >
           {{ item.label }}
         </text>
+        <polyline
+          v-for="entry in entries"
+          :key="entry.id"
+          :points="
+            entry.positions
+              .map((position) => `${position.x},${position.y}`)
+              .join(' ')
+          "
+          stroke="lightGray"
+          stroke-width="1"
+          fill="none"
+        />
       </svg>
     </div>
     <div class="flex flex-col items-center justify-center">
@@ -52,8 +64,6 @@
         :key="phenotype.id"
         :phenotype-range="phenotype"
         class="gap-4 py-2"
-        @update-lower-value="handleUpdateLowerValue"
-        @update-upper-value="handleUpdateUpperValue"
       />
     </div>
   </div>
@@ -62,11 +72,7 @@
 <script setup lang="ts">
 import { reactive, useTemplateRef } from "#imports";
 import { useElementBounding } from "@vueuse/core";
-import type {
-  GenotypeRange,
-  PhenotypeRange,
-  PhenotypeRangeUpdate,
-} from "~/types";
+import type { GenotypeRange, PhenotypeRange } from "~/types";
 
 const svgContainer = useTemplateRef("svgContainer");
 const paddingY = ref(20);
@@ -257,23 +263,39 @@ const labels = computed<LabelCollection[]>(() => {
 
 const allLabels = computed(() => labels.value.all_labels);
 
-const handleUpdateLowerValue = (phenotypeRangeUpdate: PhenotypeRangeUpdate) => {
-  const phenotypeIndex = phenotypeRanges.findIndex(
-    (phenotype) => phenotype.id === phenotypeRangeUpdate.phenotype_id
-  );
-  if (phenotypeIndex !== -1) {
-    phenotypeRanges[phenotypeIndex].min_value =
-      phenotypeRangeUpdate.lower_value;
-  }
-};
+interface PopulationPosition {
+  x: number;
+  y: number;
+}
 
-const handleUpdateUpperValue = (phenotypeRangeUpdate: PhenotypeRangeUpdate) => {
-  const phenotypeIndex = phenotypeRanges.findIndex(
-    (phenotype) => phenotype.id === phenotypeRangeUpdate.phenotype_id
-  );
-  if (phenotypeIndex !== -1) {
-    phenotypeRanges[phenotypeIndex].min_value =
-      phenotypeRangeUpdate.lower_value;
+interface PopulationEntry {
+  id: string;
+  positions: PopulationPosition[];
+}
+
+const entryCount = ref(10);
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const entries = computed<PopulationEntry[]>(() => {
+  const entry_collection: PopulationEntry[] = [];
+  const count = entryCount.value;
+  for (let index = 0; index < count; index++) {
+    const id = `entry-${index}`;
+    const positions: PopulationPosition[] = [];
+    for (let index = 0; index < totalCount.value; index++) {
+      const y = getRandomIntInclusive(
+        startingYPosition.value,
+        usableHeight.value
+      );
+      const x = sliderPositions.value.positions[index];
+      positions.push({ x, y });
+    }
+    entry_collection.push({ id, positions });
   }
-};
+  return entry_collection;
+});
 </script>

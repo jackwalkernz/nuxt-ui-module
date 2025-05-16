@@ -1,16 +1,28 @@
 <template>
   <div class="w-full h-full flex flex-row items-center justify-start gap-4">
     <div class="w-full flex flex-row items-center justify-start gap-2 p-2">
+      <USwitch
+        v-model="enabled"
+        unchecked-icon="mdi-lock"
+        checked-icon="mdi-lock-open"
+        size="xs"
+      />
       <h1 class="text-md font-semibold text-secondary">
         {{ props.phenotypeRange.name }}
       </h1>
-      <UCheckbox v-model="exactValue" label="Use exact value" class="px-3" />
+      <UCheckbox
+        v-model="exactValue"
+        label="Use exact value"
+        class="px-3"
+        :disabled="!enabled"
+      />
       <div v-if="exactValue" class="flex flex-row items-center justify-start">
         <UInputNumber
           v-model="value"
           :min="props.phenotypeRange.min_value"
           :max="props.phenotypeRange.max_value"
           variant="soft"
+          :disabled="!enabled"
         />
       </div>
       <div v-else class="flex flex-row items-center jusify-center gap-2">
@@ -19,12 +31,14 @@
           :min="props.phenotypeRange.min_value"
           :max="lower_bound.max_value"
           variant="soft"
+          :disabled="!enabled"
         />
         <UInputNumber
           v-model="upperValue"
           :min="upper_bound.min_value"
           :max="props.phenotypeRange.max_value"
           variant="soft"
+          :disabled="!enabled"
         />
       </div>
     </div>
@@ -39,19 +53,20 @@ const props = defineProps({
   },
 });
 
+const enabled = ref(true);
+
 const exactValue = ref(true);
 
-const value = ref(
-  (props.phenotypeRange.min_value + props.phenotypeRange.max_value) / 2
-);
+const lowerValue = ref<number>(props.phenotypeRange.min_value);
+const upperValue = ref<number>(props.phenotypeRange.max_value);
+
+const value = ref<number>((lowerValue.value + upperValue.value) / 2);
 
 interface Bound {
   min_value: number;
   max_value: number;
 }
 
-const lowerValue = ref<number>(props.phenotypeRange.min_value);
-const upperValue = ref<number>(props.phenotypeRange.max_value);
 const lower_bound = computed<Bound>(() => {
   return {
     min_value: props.phenotypeRange.min_value,
